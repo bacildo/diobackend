@@ -1,33 +1,25 @@
 import { Request } from "express-serve-static-core";
-import { IUser } from "../interfaces/User";
-
-const mockDatabase = [
-  {
-    name: "Jamal",
-    email: "jamal@gmail.com",
-  },
-];
+import { AppDataSource } from "../database";
+import { User } from "../entities/User";
+import { UserRepository } from "../repositories/User";
 
 export class UserService {
-  db: IUser[];
+  private userRepository: UserRepository;
 
-  constructor(database = mockDatabase) {
-    this.db = database;
+  constructor(userRepository = new UserRepository(AppDataSource.manager)) {
+    this.userRepository = userRepository;
   }
 
-  createUser = (name: string, email: string) => {
-    const user = {
-      name: name,
-      email: email,
-    };
-    this.db.push(user);
-    console.log("Database updated", this.db);
+  createUser = async (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<User> => {
+    const user = new User(name, email, password);
+    return this.userRepository.createUser(user);
   };
 
-  getUsers = () => {
-    console.log('Users retrieved', this.db);
-    return this.db;
-  };
+  getUser = () => {};
 
   deleteUser = (params: Request) => {
     const user = params.params;

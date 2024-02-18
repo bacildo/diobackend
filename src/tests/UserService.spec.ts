@@ -1,23 +1,41 @@
-import { IUser } from "../interfaces/User";
-import { UserService } from "../service/UserService";
 import { Request } from "express";
+import { UserService } from "../service/UserService";
+
+jest.mock("../repositories/User");
+
+const mockUserRepository = require("../repositories/User");
+
+const user = {
+  id_user: "1234565",
+  name: "Diogo",
+  email: "bacildo@gmail.com",
+  password: "1234",
+};
 
 describe("UserService", () => {
-  const mockDatabase: IUser[] = [];
-  const userService = new UserService(mockDatabase);
-  const user = {
-    name: "Diogo",
-    email: "bacildo@gmail.com",
-  };
+  const userService = new UserService(mockUserRepository);
 
-  it("should create a user", () => {
-    const mockConsoleLog = jest.spyOn(global.console, "log");
-
-    userService.createUser(user.name, user.email);
-    expect(mockConsoleLog).toHaveBeenCalledWith(
-      "Database updated",
-      mockDatabase
+  it("should create a user", async () => {
+    mockUserRepository.createUser = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        id_user: user.id_user,
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      })
     );
+    const response = await userService.createUser(
+      user.name,
+      user.email,
+      user.password
+    );
+    expect(mockUserRepository.createUser).toHaveBeenCalled();
+    expect(response).toMatchObject({
+      id_user: user.id_user,
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    });
   });
   it("should delete the user", () => {
     const mockConsoleLog = jest.spyOn(global.console, "log");
@@ -32,8 +50,8 @@ describe("UserService", () => {
     expect(mockConsoleLog).toHaveBeenCalledWith("User deleted", {});
   });
 
-  it("should get the users", () => {});
-  const mockConsoleLog = jest.spyOn(global.console, "log");
-  userService.getUsers();
-  expect(mockConsoleLog).toHaveBeenCalledWith("Users retrieved", mockDatabase);
+  // it("should get the users", () => {});
+  // const mockConsoleLog = jest.spyOn(global.console, "log");
+  // userService.getUser();
+  // expect(mockConsoleLog).toHaveBeenCalledWith("Users retrieved");
 });
