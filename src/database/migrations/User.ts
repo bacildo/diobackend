@@ -7,24 +7,24 @@ export class User1708209047617 implements MigrationInterface {
         name: "users",
         columns: [
           {
-            name: "id_user",
-            type: "VARCHAR",
+            name: "user_id",
+            type: "string",
             isPrimary: true,
           },
           {
             name: "name",
-            type: "VARCHAR",
+            type: "string",
             isNullable: false,
           },
           {
             name: "email",
-            type: "VARCHAR",
+            type: "string",
             isNullable: false,
             isUnique: true,
           },
           {
             name: "password",
-            type: "VARCHAR",
+            type: "string",
             isNullable: false,
           },
         ],

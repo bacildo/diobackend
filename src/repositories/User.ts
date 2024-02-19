@@ -7,13 +7,25 @@ export class UserRepository {
   constructor(manager = AppDataSource.manager) {
     this.manager = manager;
   }
-  createUser = async (user: User): Promise<User> => {
+  createUser = async (user: User): Promise<User| null> => {
     return this.manager.save(user);
   };
-  getUser = async (userId: string): Promise<User> => {
+  getUser = async (userId: string): Promise<User | null> => {
     return this.manager.findOne(User, {
       where: {
         user_id: userId,
+      },
+    });
+  };
+
+  getUserByEmailAndPassword = async (
+    email: string,
+    password: string
+  ): Promise<User | null> => {
+    return this.manager.findOne(User, {
+      where: {
+        email,
+        password,
       },
     });
   };

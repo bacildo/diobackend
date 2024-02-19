@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { randomUUID} from "crypto"
+import { Column, Entity } from "typeorm";
+import { randomUUID } from "crypto";
 
 @Entity("users")
 export class User {
-  @PrimaryGeneratedColumn()
+  @Column({ type: 'uuid', primary: true })
   user_id: string;
 
   @Column({ nullable: false })
@@ -16,7 +16,7 @@ export class User {
   password: string;
 
   constructor(name: string, email: string, password: string) {
-    this.user_id = randomUUID()
+    this.user_id = randomUUID();
     this.name = name;
     this.email = email;
     this.password = password;
